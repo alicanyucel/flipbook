@@ -1,0 +1,140 @@
+<div class="flipbook-container" 
+     [style.width.px]="width" 
+     [style.height.px]="height">
+  
+  <!-- Flip Book Wrapper -->
+  <div class="flipbook-wrapper" 
+       [class.flipping]="isFlipping"
+       [class.flip-next]="flipDirection === 'next'"
+       [class.flip-prev]="flipDirection === 'prev'">
+    
+    <!-- Current Page -->
+    <div class="page-container current-page">
+      <div class="page left-page" 
+           (click)="onLeftClick()"
+           [class.clickable]="currentPage > 0">
+        <div class="page-content">
+          <div [innerHTML]="getCurrentPage()?.leftContent || ''"></div>
+          <img *ngIf="getCurrentPage()?.leftImage" 
+               [src]="getCurrentPage()?.leftImage" 
+               alt="Left page image">
+        </div>
+      </div>
+      
+      <div class="page right-page" 
+           (click)="onRightClick()"
+           [class.clickable]="currentPage < pages.length - 1">
+        <div class="page-content">
+          <div [innerHTML]="getCurrentPage()?.rightContent || ''"></div>
+          <img *ngIf="getCurrentPage()?.rightImage" 
+               [src]="getCurrentPage()?.rightImage" 
+               alt="Right page image">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Next Page (for flip animation) -->
+    <div class="page-container next-page" *ngIf="getNextPage()">
+      <div class="page left-page">
+        <div class="page-content">
+          <div [innerHTML]="getNextPage()?.leftContent || ''"></div>
+          <img *ngIf="getNextPage()?.leftImage" 
+               [src]="getNextPage()?.leftImage" 
+               alt="Next left page image">
+        </div>
+      </div>
+      
+      <div class="page right-page">
+        <div class="page-content">
+          <div [innerHTML]="getNextPage()?.rightContent || ''"></div>
+          <img *ngIf="getNextPage()?.rightImage" 
+               [src]="getNextPage()?.rightImage" 
+               alt="Next right page image">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Previous Page (for flip animation) -->
+    <div class="page-container prev-page" *ngIf="getPrevPage()">
+      <div class="page left-page">
+        <div class="page-content">
+          <div [innerHTML]="getPrevPage()?.leftContent || ''"></div>
+          <img *ngIf="getPrevPage()?.leftImage" 
+               [src]="getPrevPage()?.leftImage" 
+               alt="Previous left page image">
+        </div>
+      </div>
+      
+      <div class="page right-page">
+        <div class="page-content">
+          <div [innerHTML]="getPrevPage()?.rightContent || ''"></div>
+          <img *ngIf="getPrevPage()?.rightImage" 
+               [src]="getPrevPage()?.rightImage" 
+               alt="Previous right page image">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Flipping Page -->
+    <div class="flipping-page" [class.active]="isFlipping">
+      <div class="page-front">
+        <div class="page-content" *ngIf="flipDirection === 'next'">
+          <div [innerHTML]="getCurrentPage()?.rightContent || ''"></div>
+          <img *ngIf="getCurrentPage()?.rightImage" 
+               [src]="getCurrentPage()?.rightImage" 
+               alt="Flipping page front">
+        </div>
+        <div class="page-content" *ngIf="flipDirection === 'prev'">
+          <div [innerHTML]="getCurrentPage()?.leftContent || ''"></div>
+          <img *ngIf="getCurrentPage()?.leftImage" 
+               [src]="getCurrentPage()?.leftImage" 
+               alt="Flipping page front">
+        </div>
+      </div>
+      
+      <div class="page-back">
+        <div class="page-content" *ngIf="flipDirection === 'next'">
+          <div [innerHTML]="getNextPage()?.leftContent || ''"></div>
+          <img *ngIf="getNextPage()?.leftImage" 
+               [src]="getNextPage()?.leftImage" 
+               alt="Flipping page back">
+        </div>
+        <div class="page-content" *ngIf="flipDirection === 'prev'">
+          <div [innerHTML]="getPrevPage()?.rightContent || ''"></div>
+          <img *ngIf="getPrevPage()?.rightImage" 
+               [src]="getPrevPage()?.rightImage" 
+               alt="Flipping page back">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Navigation -->
+  <div class="navigation">
+    <button class="nav-btn prev-btn" 
+            (click)="prevPage()" 
+            [disabled]="currentPage === 0 || isFlipping">
+      ◀ Önceki
+    </button>
+    
+    <span class="page-indicator">
+      Sayfa {{ currentPage + 1 }} / {{ pages.length }}
+    </span>
+    
+    <button class="nav-btn next-btn" 
+            (click)="nextPage()" 
+            [disabled]="currentPage === pages.length - 1 || isFlipping">
+      Sonraki ▶
+    </button>
+  </div>
+  
+  <!-- Page Thumbnails -->
+  <div class="thumbnails" *ngIf="pages.length > 1">
+    <div class="thumbnail" 
+         *ngFor="let page of pages; let i = index"
+         [class.active]="i === currentPage"
+         (click)="goToPage(i)">
+      {{ i + 1 }}
+    </div>
+  </div>
+</div>
